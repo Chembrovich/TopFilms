@@ -11,5 +11,6 @@ public interface IDetailInfoPresenter {
     String getMovieProductionCompanies();
     String getMovieReleaseDate();
     String getMovieDuration();
+    String getMovieStatus();
     String getMovieOverview();
 }

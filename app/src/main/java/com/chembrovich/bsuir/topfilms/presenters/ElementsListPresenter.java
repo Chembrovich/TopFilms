@@ -15,6 +15,8 @@ import retrofit2.Response;
 
 public class ElementsListPresenter implements IElementsListPresenter {
     private static final int PAGE_SIZE = 20;
+    private static final String NO_INTERNET = "There is no internet connection!";
+    private static final String LOAD_ERROR = "Something is wrong!";
 
     private IElementsListView elementsListView;
     private ApiHandler apiHandler;
@@ -42,13 +44,13 @@ public class ElementsListPresenter implements IElementsListPresenter {
                     elementsListView.updateList();
                 }
                 if (response.errorBody() != null) {
-                    elementsListView.showMessage("Something is wrong!");
+                    elementsListView.showMessage(LOAD_ERROR);
                 }
             }
 
             @Override
             public void onFailure() {
-                elementsListView.showMessage("There is no internet connection!");
+                elementsListView.showMessage(NO_INTERNET);
             }
         };
         apiHandler.getTopRatedMovies(pageNumber, callback);
@@ -64,13 +66,13 @@ public class ElementsListPresenter implements IElementsListPresenter {
                     elementsListView.updateList();
                 }
                 if (response.errorBody() != null) {
-                    elementsListView.showMessage("Something is wrong!");
+                    elementsListView.showMessage(LOAD_ERROR);
                 }
             }
 
             @Override
             public void onFailure() {
-                elementsListView.showMessage("There is no internet connection!");
+                elementsListView.showMessage(NO_INTERNET);
             }
         };
         apiHandler.getPhotosList(pageNumber, PAGE_SIZE, callback);
@@ -86,13 +88,13 @@ public class ElementsListPresenter implements IElementsListPresenter {
                     moviesList.addAll(response.body().getMoviesList());
                 }
                 if (response.errorBody() != null) {
-                    elementsListView.showMessage("Something is wrong!");
+                    elementsListView.showMessage(LOAD_ERROR);
                 }
             }
 
             @Override
             public void onFailure() {
-                elementsListView.showMessage("There is no internet connection!");
+                elementsListView.showMessage(NO_INTERNET);
             }
         };
         pageNumber++;
@@ -106,13 +108,13 @@ public class ElementsListPresenter implements IElementsListPresenter {
                     elementsListView.updateList();
                 }
                 if (response.errorBody() != null) {
-                    elementsListView.showMessage("Something is wrong!");
+                    elementsListView.showMessage(LOAD_ERROR);
                 }
             }
 
             @Override
             public void onFailure() {
-                elementsListView.showMessage("There is no internet connection!");
+                elementsListView.showMessage(NO_INTERNET);
             }
         };
         apiHandler.getPhotosList(pageNumber, PAGE_SIZE, callback1);

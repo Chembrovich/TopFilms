@@ -10,11 +10,11 @@
         android:layout_height="wrap_content"
         android:background="@color/colorBackground">
         <LinearLayout
-            android:id="@+id/layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/layout"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="invisible">
 
             <ImageView
                 android:id="@+id/detail_image_view"
@@ -48,7 +48,6 @@
                     android:text="@string/unsplash_title"/>
             </LinearLayout>
 
-
             <TextView
                 android:id="@+id/movie_name_text_view"
                 android:gravity="center"
@@ -61,6 +60,7 @@
 
             <TextView
                 android:id="@+id/movie_tagline_text_view"
+                android:layout_gravity="center"
                 android:gravity="center"
                 android:textStyle="italic"
                 android:layout_width="wrap_content"

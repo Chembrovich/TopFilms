@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chembrovich.bsuir.topfilms.R;
 import com.chembrovich.bsuir.topfilms.presenters.DetailInfoPresenter;
@@ -17,30 +18,28 @@ import com.chembrovich.bsuir.topfilms.presenters.interfaces.IDetailInfoPresenter
 import com.chembrovich.bsuir.topfilms.views.interfaces.IDetailInfoFragment;
 import com.squareup.picasso.Picasso;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class DetailInfoFragment extends Fragment implements IDetailInfoFragment {
 
-    int movieId;
-    String photoSrc;
-    String photosUserName;
+    private int movieId;
+    private String photoSrc;
+    private String photosUserName;
 
-    ImageView imageView;
-    TextView photosUserNameTextView;
-    TextView movieNameTextView;
-    TextView movieTaglineTextView;
-    TextView movieGenreTextView;
-    TextView movieCountriesTextView;
-    TextView movieOriginalLanguageTextView;
-    TextView movieSpokenLanguagesTextView;
-    TextView movieProductionCompaniesTextView;
-    TextView movieReleaseDateTextView;
-    TextView movieDurationTextView;
-    TextView movieOverviewTextView;
-    LinearLayout linearLayout;
+    private ImageView imageView;
+    private TextView photosUserNameTextView;
+    private TextView movieNameTextView;
+    private TextView movieTaglineTextView;
+    private TextView movieGenreTextView;
+    private TextView movieCountriesTextView;
+    private TextView movieOriginalLanguageTextView;
+    private TextView movieSpokenLanguagesTextView;
+    private TextView movieProductionCompaniesTextView;
+    private TextView movieStatusTextView;
+    private TextView movieReleaseDateTextView;
+    private TextView movieDurationTextView;
+    private TextView movieOverviewTextView;
+    private LinearLayout linearLayout;
 
-    IDetailInfoPresenter presenter;
+    private IDetailInfoPresenter presenter;
 
     public DetailInfoFragment() {
         // Required empty public constructor
@@ -72,6 +71,7 @@ public class DetailInfoFragment extends Fragment implements IDetailInfoFragment 
         movieCountriesTextView = view.findViewById(R.id.country_text_view);
         movieOriginalLanguageTextView = view.findViewById(R.id.original_language_text_view);
         movieSpokenLanguagesTextView = view.findViewById(R.id.spoken_languages_text_view);
+        movieStatusTextView = view.findViewById(R.id.status_text_view);
         movieProductionCompaniesTextView = view.findViewById(R.id.production_companies_text_view);
         movieReleaseDateTextView = view.findViewById(R.id.release_date_text_view);
         movieDurationTextView = view.findViewById(R.id.duration_text_view);
@@ -96,9 +96,15 @@ public class DetailInfoFragment extends Fragment implements IDetailInfoFragment 
         movieCountriesTextView.setText(presenter.getMovieCountries());
         movieOriginalLanguageTextView.setText(presenter.getMovieOriginalLanguage());
         movieSpokenLanguagesTextView.setText(presenter.getMovieSpokenLanguages());
+        movieStatusTextView.setText(presenter.getMovieStatus());
         movieProductionCompaniesTextView.setText(presenter.getMovieProductionCompanies());
         movieReleaseDateTextView.setText(presenter.getMovieReleaseDate());
         movieDurationTextView.setText(presenter.getMovieDuration());
         movieOverviewTextView.setText(presenter.getMovieOverview());
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

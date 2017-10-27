@@ -9,6 +9,9 @@ import com.chembrovich.bsuir.topfilms.views.interfaces.IDetailInfoFragment;
 import retrofit2.Response;
 
 public class DetailInfoPresenter implements IDetailInfoPresenter {
+    private static final String NO_INTERNET = "There is no internet connection!";
+    private static final String LOAD_ERROR = "Something is wrong!";
+
     private IDetailInfoFragment view;
     private int movieId;
     private ApiHandler apiHandler;
@@ -25,13 +28,18 @@ public class DetailInfoPresenter implements IDetailInfoPresenter {
         IApiCallback<DetailMovieResponse> callback = new IApiCallback<DetailMovieResponse>() {
             @Override
             public void onResponse(Response<DetailMovieResponse> response) {
-                detailMovieInfo = response.body();
-                view.setInfo();
+                if (response.isSuccessful()) {
+                    detailMovieInfo = response.body();
+                    view.setInfo();
+                }
+                if (response.errorBody() != null) {
+                    view.showMessage(LOAD_ERROR);
+                }
             }
 
             @Override
             public void onFailure() {
-
+                view.showMessage(NO_INTERNET);
             }
         };
         apiHandler.getDetailMovieInfoById(movieId, callback);
@@ -94,6 +102,11 @@ public class DetailInfoPresenter implements IDetailInfoPresenter {
             result.append(detailMovieInfo.getProductionCompanies().get(i).getName());
         }
         return result.toString();
+    }
+
+    @Override
+    public String getMovieStatus() {
+        return detailMovieInfo.getStatus();
     }
 
     @Override
