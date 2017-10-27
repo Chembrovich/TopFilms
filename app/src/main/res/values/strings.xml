@@ -1,6 +1,18 @@
 <resources>
     <string name="app_name">TopFilms</string>
-
     <string name="list_item_number">%1$d.</string>
+
+    <string name="movie_overview_title">Overview: </string>
+    <string name="movie_duration_title">Duration: </string>
+    <string name="movie_release_date_title">Release date: </string>
+    <string name="movie_production_companies_title">Production Companies: </string>
+    <string name="movie_status_title">Status: </string>
+    <string name="movie_spoken_languages_title">Spoken languages: </string>
+    <string name="movie_original_language_title">Original language: </string>
+    <string name="movie_country_title">Country: </string>
+    <string name="movie_genre_title">Genre: </string>
+    <string name="photo_by_title">Photo by</string>
+    <string name="unsplash_title">/ Unsplash</string>
+    <string name="photo_by_unsplash">Photo by <u>%1$s</u> / <u>Unsplash</u></string>
 
 </resources>

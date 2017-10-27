@@ -3,6 +3,7 @@ package com.chembrovich.bsuir.topfilms.views;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +17,8 @@ import com.chembrovich.bsuir.topfilms.R;
 import com.chembrovich.bsuir.topfilms.presenters.ElementsListPresenter;
 import com.chembrovich.bsuir.topfilms.presenters.interfaces.IElementsListPresenter;
 import com.chembrovich.bsuir.topfilms.views.interfaces.IElementsListView;
+import com.chembrovich.bsuir.topfilms.views.interfaces.IOnLoadMoreListener;
+import com.chembrovich.bsuir.topfilms.views.interfaces.IOnRecycleViewItemClickListener;
 
 
 public class ElementsListFragment extends Fragment implements IElementsListView {
@@ -25,7 +28,7 @@ public class ElementsListFragment extends Fragment implements IElementsListView 
     private IElementsListPresenter presenter;
     private int pageNumber;
 
-    private OnFragmentInteractionListener mListener;
+    private OnElementsListFragmentInteractionListener interactionListener;
 
     public ElementsListFragment() {
         pageNumber = 1;
@@ -46,11 +49,57 @@ public class ElementsListFragment extends Fragment implements IElementsListView 
         presenter.makeRequestToGetPhotos(pageNumber);
 
         recyclerView = view.findViewById(R.id.elements_recycler_view);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         layoutManager = new LinearLayoutManager(this.getContext());
         recyclerView.setLayoutManager(layoutManager);
-        recyclerViewAdapter = new RecyclerViewAdapter(this.getContext(), presenter);
+        IOnRecycleViewItemClickListener onItemClick = new IOnRecycleViewItemClickListener() {
+            @Override
+            public void onItemSelected(int position) {
+                interactionListener.onRecycleViewItemClick(presenter.getMovieIdByPosition(position)
+                        ,presenter.getPhotoSrcByPosition(position)
+                        ,presenter.getPhotoUserNameByPosition(position));
+            }
+        };
+        recyclerViewAdapter = new RecyclerViewAdapter(this.getContext(), presenter, onItemClick);
         recyclerView.setAdapter(recyclerViewAdapter);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            private int visibleThreshold = 5;
+            private int lastVisibleItem, totalItemCount;
+            final LinearLayoutManager linearLayoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                totalItemCount = linearLayoutManager.getItemCount();
+                lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+                if (!recyclerViewAdapter.isLoading && totalItemCount <= (lastVisibleItem + visibleThreshold)) {
+                    if (recyclerViewAdapter.onLoadMoreListener != null) {
+                        recyclerViewAdapter.onLoadMoreListener.onLoadMore();
+                    }
+                    recyclerViewAdapter.isLoading = true;
+                }
+            }
+        });
+
+        recyclerViewAdapter.setOnLoadMoreListener(new IOnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                if (presenter.getMoviesList().size() <= 50) {
+                    presenter.getMoviesList().add(null);
+                    recyclerViewAdapter.notifyItemInserted(presenter.getMoviesList().size() - 1);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            presenter.getMoviesList().remove(presenter.getMoviesList().size() - 1);
+                            recyclerViewAdapter.notifyItemRemoved(presenter.getMoviesList().size());
+                            presenter.makeRequestToLoadMoreData();
+                        }
+                    }, 5000);
+                } else {
+                    Toast.makeText(getContext(), "Loading data completed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         return view;
     }
@@ -58,17 +107,18 @@ public class ElementsListFragment extends Fragment implements IElementsListView 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        /*if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnElementsListFragmentInteractionListener) {
+            interactionListener = (OnElementsListFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }*/
+                    + " must implement OnElementsListFragmentInteractionListener");
+        }
     }
 
     @Override
     public void updateList() {
         recyclerViewAdapter.notifyDataSetChanged();
+        recyclerViewAdapter.setLoaded();
     }
 
     @Override
@@ -79,10 +129,10 @@ public class ElementsListFragment extends Fragment implements IElementsListView 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        interactionListener = null;
     }
 
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
+    public interface OnElementsListFragmentInteractionListener {
+        void onRecycleViewItemClick(int movieId, String photoSrc,String photosUserName);
     }
 }

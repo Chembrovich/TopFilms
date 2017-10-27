@@ -10,5 +10,8 @@ public interface IElementsListPresenter {
     void makeRequestToGetPhotos(int pageNumber);
     List<PhotosResponse> getPhotosList();
     List<MoviesResponseItem> getMoviesList();
-
+    void makeRequestToLoadMoreData();
+    int getMovieIdByPosition(int position);
+    String getPhotoSrcByPosition(int position);
+    String getPhotoUserNameByPosition(int posititon);
 }

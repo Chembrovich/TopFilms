@@ -18,13 +18,14 @@ public class ElementsListPresenter implements IElementsListPresenter {
 
     private IElementsListView elementsListView;
     private ApiHandler apiHandler;
-    private MoviesResponse moviesResponse;
+    private List<MoviesResponseItem> moviesList;
     private List<PhotosResponse> photosList;
+    private int pageNumber = 1;
 
     public ElementsListPresenter(IElementsListView elementsListView) {
         this.elementsListView = elementsListView;
         apiHandler = new ApiHandler();
-        moviesResponse = new MoviesResponse();
+        moviesList = new ArrayList<>();
         photosList = new ArrayList<>();
     }
 
@@ -34,7 +35,8 @@ public class ElementsListPresenter implements IElementsListPresenter {
             @Override
             public void onResponse(Response<MoviesResponse> response) {
                 if (response.isSuccessful()) {
-                    moviesResponse = response.body();
+                    moviesList = response.body().getMoviesList();
+                    elementsListView.updateList();
                 }
                 if (response.errorBody() != null) {
                     elementsListView.showMessage("Something is wrong!");
@@ -71,13 +73,70 @@ public class ElementsListPresenter implements IElementsListPresenter {
         apiHandler.getPhotosList(pageNumber, PAGE_SIZE, callback);
 
     }
+
+    @Override
+    public void makeRequestToLoadMoreData() {
+        IApiCallback<MoviesResponse> callback = new IApiCallback<MoviesResponse>() {
+            @Override
+            public void onResponse(Response<MoviesResponse> response) {
+                if (response.isSuccessful()) {
+                    moviesList.addAll(response.body().getMoviesList());
+                }
+                if (response.errorBody() != null) {
+                    elementsListView.showMessage("Something is wrong!");
+                }
+            }
+
+            @Override
+            public void onFailure() {
+                elementsListView.showMessage("There is no internet connection!");
+            }
+        };
+        pageNumber++;
+        apiHandler.getTopRatedMovies(pageNumber, callback);
+
+        IApiCallback<List<PhotosResponse>> callback1 = new IApiCallback<List<PhotosResponse>>() {
+            @Override
+            public void onResponse(Response<List<PhotosResponse>> response) {
+                if (response.isSuccessful()) {
+                    photosList.addAll(response.body());
+                    elementsListView.updateList();
+                }
+                if (response.errorBody() != null) {
+                    elementsListView.showMessage("Something is wrong!");
+                }
+            }
+
+            @Override
+            public void onFailure() {
+                elementsListView.showMessage("There is no internet connection!");
+            }
+        };
+        apiHandler.getPhotosList(pageNumber, PAGE_SIZE, callback1);
+    }
+
     @Override
     public List<MoviesResponseItem> getMoviesList() {
-        return moviesResponse.getMoviesList();
+        return moviesList;
     }
 
     @Override
     public List<PhotosResponse> getPhotosList() {
         return photosList;
+    }
+
+    @Override
+    public int getMovieIdByPosition(int position) {
+        return moviesList.get(position).getId();
+    }
+
+    @Override
+    public String getPhotoSrcByPosition(int position) {
+        return photosList.get(position).getUrls().getRegular();
+    }
+
+    @Override
+    public String getPhotoUserNameByPosition(int position) {
+        return photosList.get(position).getUser().getName();
     }
 }

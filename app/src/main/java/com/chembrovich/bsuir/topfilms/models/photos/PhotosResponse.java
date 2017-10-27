@@ -29,4 +29,8 @@ public class PhotosResponse {
     public PhotosUrls getUrls() {
         return urls;
     }
+
+    public PhotosUser getUser() {
+        return user;
+    }
 }

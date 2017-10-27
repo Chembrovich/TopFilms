@@ -1,5 +1,6 @@
 package com.chembrovich.bsuir.topfilms.network;
 
+import com.chembrovich.bsuir.topfilms.models.movies.DetailMovieResponse;
 import com.chembrovich.bsuir.topfilms.models.movies.MoviesResponse;
 import com.chembrovich.bsuir.topfilms.models.photos.PhotosResponse;
 import com.chembrovich.bsuir.topfilms.network.interfaces.IApiCallback;
@@ -20,10 +21,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiHandler {
-    private IMoviesApi filmsApi;
+    private IMoviesApi moviesApi;
     private IPhotosApi photosApi;
     private static final String FILMS_API_BASE_URL = "https://api.themoviedb.org/3/";
     private static final String PHOTOS_API_BASE_URL = "https://api.unsplash.com/";
+    private static final String PHOTOS_API_KEY = "f5e8a7bd4cc7e2aa5d7963b6baa6ba1da27ef6a7fd53bdcb55a080105a09851f";
 
     public ApiHandler() {
         final String FILMS_API_KEY = "34871c178404cb46da0d1b8412e58ad7";
@@ -48,9 +50,12 @@ public class ApiHandler {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        filmsApi = retrofit.create(IMoviesApi.class);
+        moviesApi = retrofit.create(IMoviesApi.class);
+
+        //System.setProperty("https.protocols", "TLSv1.2");
 
         okHttpClient = new OkHttpClient.Builder()
+
                 .addInterceptor(new Interceptor() {
                     @Override
                     public Response intercept(Chain chain) throws IOException {
@@ -73,7 +78,7 @@ public class ApiHandler {
     }
 
     public void getTopRatedMovies(int pageNumber, final IApiCallback<MoviesResponse> callback) {
-        filmsApi.getTopRatedMovies(pageNumber).enqueue(new Callback<MoviesResponse>() {
+        moviesApi.getTopRatedMovies(pageNumber).enqueue(new Callback<MoviesResponse>() {
             @Override
             public void onResponse(Call<MoviesResponse> call, retrofit2.Response<MoviesResponse> response) {
                 callback.onResponse(response);
@@ -95,7 +100,31 @@ public class ApiHandler {
 
             @Override
             public void onFailure(Call<List<PhotosResponse>> call, Throwable t) {
+                callback.onFailure();
+            }
+        });
+        /*photosApi.getPhotosList(pageNumber, pageSize,PHOTOS_API_KEY).enqueue(new Callback<List<PhotosResponse>>() {
+            @Override
+            public void onResponse(Call<List<PhotosResponse>> call, retrofit2.Response<List<PhotosResponse>> response) {
+                callback.onResponse(response);
+            }
 
+            @Override
+            public void onFailure(Call<List<PhotosResponse>> call, Throwable t) {
+                callback.onFailure();
+            }
+        });*/
+    }
+
+    public void getDetailMovieInfoById(int movieId, final IApiCallback<DetailMovieResponse> callback){
+        moviesApi.getDetailMovieInfoById(movieId).enqueue(new Callback<DetailMovieResponse>() {
+            @Override
+            public void onResponse(Call<DetailMovieResponse> call, retrofit2.Response<DetailMovieResponse> response) {
+                callback.onResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<DetailMovieResponse> call, Throwable t) {
                 callback.onFailure();
             }
         });

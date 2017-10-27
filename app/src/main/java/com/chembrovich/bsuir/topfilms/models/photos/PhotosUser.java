@@ -20,4 +20,8 @@ public class PhotosUser {
     @SerializedName("links")
     @Expose
     private PhotosLinks links;
+
+    public String getName() {
+        return name;
+    }
 }
