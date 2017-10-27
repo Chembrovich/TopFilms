@@ -84,7 +84,7 @@ public class ElementsListFragment extends Fragment implements IElementsListView 
         recyclerViewAdapter.setOnLoadMoreListener(new IOnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                if (presenter.getMoviesList().size() <= 50) {
+                if (presenter.getMoviesList().size() <= presenter.getMaxPageCount()) {
                     presenter.getMoviesList().add(null);
                     recyclerViewAdapter.notifyItemInserted(presenter.getMoviesList().size() - 1);
                     new Handler().postDelayed(new Runnable() {

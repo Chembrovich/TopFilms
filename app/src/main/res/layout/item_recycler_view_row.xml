@@ -13,9 +13,9 @@
 
         <ImageView
             android:id="@+id/row_image_view"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_margin="10dp"
+            android:layout_width="@dimen/image_in_row_size"
+            android:layout_height="@dimen/image_in_row_size"
+            android:layout_margin="@dimen/default_margin"
             android:src="@drawable/list_image_icon" />
 
         <TextView
@@ -23,20 +23,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginRight="10dp"
-            android:layout_marginEnd="5dp"
-            android:textSize="20sp"
-            android:textColor="#424242"
-            android:text="1."/>
+            android:layout_marginRight="@dimen/default_margin"
+            android:layout_marginEnd="@dimen/default_margin"
+            android:textSize="@dimen/text_view_in_row_size"
+            android:textColor="#424242"/>
 
         <TextView
             android:id="@+id/row_title_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="20sp"
-            android:text="@string/app_name"/>
-
+            android:textSize="@dimen/text_view_in_row_size"/>
     </LinearLayout>
     
 </android.support.v7.widget.CardView>

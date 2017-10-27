@@ -27,4 +27,8 @@ public class MoviesResponse {
     public List<MoviesResponseItem> getMoviesList() {
         return moviesList;
     }
+
+    public int getTotalPages() {
+        return totalPages;
+    }
 }

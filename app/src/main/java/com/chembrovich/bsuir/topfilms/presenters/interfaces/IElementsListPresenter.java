@@ -12,6 +12,7 @@ public interface IElementsListPresenter {
     List<MoviesResponseItem> getMoviesList();
     void makeRequestToLoadMoreData();
     int getMovieIdByPosition(int position);
+    int getMaxPageCount();
     String getPhotoSrcByPosition(int position);
     String getPhotoUserNameByPosition(int posititon);
 }

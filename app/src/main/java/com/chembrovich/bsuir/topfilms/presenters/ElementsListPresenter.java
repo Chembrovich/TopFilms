@@ -20,13 +20,15 @@ public class ElementsListPresenter implements IElementsListPresenter {
     private ApiHandler apiHandler;
     private List<MoviesResponseItem> moviesList;
     private List<PhotosResponse> photosList;
-    private int pageNumber = 1;
+    private int pageNumber;
+    private int maxPageCount;
 
     public ElementsListPresenter(IElementsListView elementsListView) {
         this.elementsListView = elementsListView;
         apiHandler = new ApiHandler();
         moviesList = new ArrayList<>();
         photosList = new ArrayList<>();
+        pageNumber = 1;
     }
 
     @Override
@@ -36,6 +38,7 @@ public class ElementsListPresenter implements IElementsListPresenter {
             public void onResponse(Response<MoviesResponse> response) {
                 if (response.isSuccessful()) {
                     moviesList = response.body().getMoviesList();
+                    maxPageCount = response.body().getTotalPages();
                     elementsListView.updateList();
                 }
                 if (response.errorBody() != null) {
@@ -138,5 +141,10 @@ public class ElementsListPresenter implements IElementsListPresenter {
     @Override
     public String getPhotoUserNameByPosition(int position) {
         return photosList.get(position).getUser().getName();
+    }
+
+    @Override
+    public int getMaxPageCount() {
+        return this.maxPageCount;
     }
 }
